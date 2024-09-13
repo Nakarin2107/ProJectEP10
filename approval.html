@@ -1,364 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>อนุมัติยืม-คืนอุปกรณ์</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="top.css/approval.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 1440px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .containerx{
-            max-width: 1440px;
-            margin: 0 auto;
-        }
-        .container h1 {
-            font-size: 24px;
-            margin: 1rem 0 2rem 0;
-            color: #333;
-            font-weight: 1000;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            padding: 12px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        tr:hover {
-            background-color: #f5f5f5;
-        }
-        .approved {
-            background-color: #d4edda;
-        }
-        .denied {
-            background-color: #f8d7da;
-        }
-        .returned {
-            background-color: #adcff3;
-        }
-        .button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 14px;
-            margin: 0 5px;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-        .button:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
-        }
-        .button.delete-all {
-            background-color: #ffffff; 
-            color: #ff6600; 
-            border: 2px solid #ff6600; 
-            border-radius: 4px;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            display: inline-flex;
-            align-items: center; 
-        }
-        
-        .button.delete-all i {
-            margin-right: 8px; 
-        }
-        
-        .button.delete-all:hover {
-            background-color: #ff6600; 
-            color: #ffffff; 
-            border: 2px solid #ff6600; 
-        }
-        
-        
-
-        .action-buttons {
-            display: flex;
-            align-items: center;
-        }
-        .action-buttons button {
-            margin-right: 10px;
-        }
-
-        .custom-alert {
-            position: fixed;
-            top: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            width: 15%; 
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); 
-        }
-
-        
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 20px 0;
-        }
-        
-        .pagination .icon-button {
-            margin: 0 8px;
-            font-size: 20px; 
-            color: #999999; 
-            transition: color 0.3s ease, transform 0.2s ease;
-            cursor: pointer;
-            transform: scale(1); 
-        }
-        
-        .pagination .icon-button:hover {
-            color: #007bff; 
-            transform: scale(1.2); 
-        }
-        
-        .pagination .icon-button:active {
-            color: #333333; 
-            transform: scale(1); 
-        }
-        
-        .pagination .icon-button.disabled {
-            color: #cccccc; 
-            cursor: not-allowed;
-        }
-        
-        .pagination .page-info {
-            margin: 0 10px;
-            font-size: 16px;
-            color: #333333; 
-            font-family: 'Courier New', Courier, monospace;
-        }
-        
-        
-        .navbar.navbar-expand-lg {
-            background-color: #e6edf4;
-            margin: 0 0 2rem 0;
-            padding: 1rem;
-            border-radius: 8px; 
-        }
-        
-        .navbar-brand {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #333;
-        }
-        
-        .navbar-nav {
-            font-size: 1.5rem;
-            color: #333;
-            display: flex;
-            gap: 1rem;
-        }
-        
-        
-        
-        .nav-link {
-            position: relative;
-            display: inline-block;
-            padding: 10px 15px;
-            color: #333;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: background-color 0.4s, border-radius 0.4s, color 0.4s;
-        }
-        
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background-color: #ff6600;
-            transform: scaleX(0);
-            transform-origin: bottom right;
-            transition: transform 0.4s;
-        }
-        
-        .nav-link:hover::after {
-            transform: scaleX(1);
-            transform-origin: bottom left;
-        }
-        
-        .nav-link:hover {
-            color: #ff6600; 
-        }
-        
-        .nav-link.active {
-            color: #ff6600 !important;
-        }
-
-        .nav-link.active, 
-        .nav-link.active::after {
-            color: #ff6600; 
-            border-radius: 8px;
-        }
-        
-        .nav-link.active::after {
-            transform: scaleX(1); 
-            transform-origin: bottom left; 
-        }
-        
-        
-        .collapse .navbar-collapse a{
-            margin: 0 2rem 0 2rem;
-        }
-        
-        .button.disabled {
-            background-color: #c0c0c0;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-        
-        .button.disabled:hover {
-            background-color: #c0c0c0;
-            transform: none;
-        }
-        @media (max-width: 768px) {
-            .navbar-nav {
-                flex-direction: column; 
-            }
-            table {
-                font-size: 14px; 
-            }
-        }
-
-        .table-custom-approved {
-            background-color: #d4edda; /* Light green */
-            color: black;
-        }
-        
-        .table-custom-denied {
-            background-color: #f8d7da; /* Light red */
-            color: black;        
-        }
-        
-        
-        .table-custom-returned {
-            background-color: #d1ecf1; /* Light blue */
-            color: black;       
-        }
-        
-        #requestsTable td {
-        text-align: center; 
-        vertical-align: middle;
-        }
-
-        #requestsTable {
-            width: 100%;
-            border-collapse: collapse; 
-        }
-        
-        #requestsTable th, #requestsTable td {
-            border: 1px solid #dddddd; 
-            padding: 8px;
-        }
-        
-        #requestsTable th {
-            background-color: #f2f2f2; 
-        }
-        
-
-        .btn-sm {
-            padding: 5px 10px;
-            font-size: 14px;
-            margin: 0 2px;
-        }
-        
-        .btn-sm.active {
-            background-color: #007bff;
-            color: white;
-        }
-        
-        .btn.disabled {
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-
-        /* สไตล์สำหรับกล่องที่แสดงสถิติการยืมอุปกรณ์ */
-        /* สไตล์สำหรับการจัดวางรายการสถิติอุปกรณ์ในแนวนอน */
-        #equipmentStatisticsContainer {
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        /* สไตล์สำหรับข้อความแสดงจำนวนการยืมทั้งหมด */
-        #totalBorrowingsContainer p {
-            font-size: 18px;
-            font-weight: 600;
-            color: #343a40;
-            margin: 0 0 10px 0; 
-        }
-        
-        /* ตรงกับ JavaScript ใน `displayEquipmentStatistics` function */
-        #equipmentStatistics {
-            display: flex;
-            gap: 20px; 
-        }
-        
-        /* สไตล์สำหรับข้อความแสดงจำนวนการยืมแยกตามประเภทอุปกรณ์ */
-        #equipmentStatistics p {  
-            font-size: 16px;
-            color: #495057;
-            margin: 0;
-            padding: 5px 10px;
-            background-color: transparent;
-            border: none;
-            box-shadow: none;
-            display: inline-block; 
-        }
-        
-        
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
+
 <body>
     <div class="containerx">
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
+                    aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div class="navbar-nav">
-                <a class="nav-link" aria-current="page" href="borrow.html">ขอยืมอุปกรณ์</a>
-                <a class="nav-link" href="return.html">ขอคืนอุปกรณ์</a>
-                <a class="nav-link active" href="approval.html">อนุมัติยืม-คืนอุปกรณ์</a>
-                <a class="nav-link" href="report.html">รายการอุปกรณ์</a>
+                    <div class="navbar-nav">
+                        <a class="nav-link" aria-current="page" href="borrow.html">ขอยืมอุปกรณ์</a>
+                        <a class="nav-link" href="return.html">ขอคืนอุปกรณ์</a>
+                        <a class="nav-link active" href="approval.html">อนุมัติยืม-คืนอุปกรณ์</a>
+                        <a class="nav-link" href="report.html">รายการอุปกรณ์</a>
+                        <a class="nav-link" href="staff-summary.html">สรุปผลของเจ้าหน้าที่</a>
+                        <a class="nav-link" href="student-report.html">รายงานยืม-คืน</a>
+                    </div>
                 </div>
             </div>
+
+            <!-- ปุ่ม Dropdown สำหรับผู้ใช้ -->
+            <div class="user-info dropdown">
+                <button class="btn btn-user dropdown-toggle" type="button" id="userMenuButton"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOHqiIabKJAjUyJiV051Jcob4Gr8j5Agm_7A&s"
+                        alt="User Avatar" style="width: 30px; height: 30px; border-radius: 50%;">
+                    <span id="userDisplay">User</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuButton">
+                    <li><span class="dropdown-item-text"><span id="userDisplayName">User Name</span></span></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><button class="dropdown-item" id="logoutButton">ออกจากระบบ</button></li>
+                </ul>
             </div>
         </nav>
     </div>
+
     <div class="container">
-        <div class="back-link">
-        </div>
+        <div class="back-link"></div>
         <h1>อนุมัติยืม-คืนอุปกรณ์</h1>
 
         <div id="equipmentStatisticsContainer">
@@ -368,33 +63,33 @@
             <div id="equipmentStatistics"></div>
         </div>
 
-        <table id="requestsTable">
-            <tr>
-                <th>วันที่ยืม</th>
-                <th>วันที่คืน</th>
-                <th>รหัสนักศึกษา</th>
-                <th>ชื่อนักศึกษา</th>
-                <th>อุปกรณ์</th>
-                <th>ชื่อเจ้าหน้าที่</th>
-                <th>สถานะ</th>
-                <th>การดำเนินการ</th>
-            </tr>
-            <!-- แถวข้อมูลจะถูกเพิ่มที่นี่โดย JavaScript -->
-        </table>
+        <!-- ทำให้ตารางสามารถเลื่อนไปด้านข้างได้ -->
+        <div class="table-responsive">
+            <table id="requestsTable">
+                <tr>
+                    <th>วันที่ยืม</th>
+                    <th>วันที่คืน</th>
+                    <th>รหัสนักศึกษา</th>
+                    <th>ชื่อนักศึกษา</th>
+                    <th>อุปกรณ์</th>
+                    <th>ชื่อเจ้าหน้าที่</th>
+                    <th>สถานะ</th>
+                    <th>การดำเนินการ</th>
+                </tr>
+                <!-- แถวข้อมูลจะถูกเพิ่มที่นี่โดย JavaScript -->
+            </table>
+        </div>
+
         <div class="pagination">
             <button id="prevPage" class="button disabled">ก่อนหน้า</button>
             <button id="nextPage" class="button">ถัดไป</button>
         </div>
-        
-        
+
         <button class="button delete-all" onclick="deleteAllRequests()">
             <i class="fas fa-trash-alt"></i> ลบทั้งหมด
         </button>
     </div>
 
-    
-    
-    
     <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -413,10 +108,10 @@
                             </select>
                         </div>
                         <!-- Success Notification -->
-                    <div id="successNotification" class="success-notification" style="display: none;">
-                        <div class="success-icon">&#10004;</div>
-                        <p>คำขอถูกแก้ไขแล้ว</p>
-                    </div>
+                        <div id="successNotification" class="success-notification" style="display: none;">
+                            <div class="success-icon">&#10004;</div>
+                            <p>คำขอถูกแก้ไขแล้ว</p>
+                        </div>
                         <input type="hidden" id="requestId">
                     </form>
                 </div>
@@ -427,12 +122,15 @@
             </div>
         </div>
     </div>
-        
+
+    <script src="main.js/but.js"></script>
     <script src="main.js/approval.js"></script>
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script>
+
 </body>
+
 </html>

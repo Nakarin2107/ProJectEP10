@@ -1,81 +1,111 @@
-const maxRequestsPerPage = 8;
+const maxRequestsPerPage = 10;
 const totalPages = 1000; 
-let currentPage = parseInt(new URLSearchParams(window.location.search).get('page')) || 1; // กำหนดหน้าปัจจุบันจาก URL หรือเป็นหน้าแรก
+let currentPage = parseInt(new URLSearchParams(window.location.search).get('page')) || 1; 
 
 // ดึงข้อมูลคำขอจาก Local Storage
 function getRequests() {
     try {
-        const requests = JSON.parse(localStorage.getItem('requests')) || [];
-        return requests;
+        return JSON.parse(localStorage.getItem('requests')) || [];
     } catch (error) {
         console.error('ไม่สามารถดึงข้อมูลคำขอจาก Local Storage ได้:', error);
         return [];
     }
 }
 
+// กำหนดค่าเริ่มต้นเมื่อหน้าเว็บโหลด
+document.addEventListener("DOMContentLoaded", function() {
+    const currentDate = new Date();
+    const monthSelect = document.getElementById('monthSelect');
+    const yearInput = document.getElementById('yearSelect');
 
+    // ตั้งค่าเริ่มต้นของเดือนเป็น 'all' (เลือกทั้งหมด)
+    monthSelect.value = 'all';
+    // ตั้งค่าปีปัจจุบัน
+    yearInput.value = currentDate.getFullYear();
+});
 
 // ฟังก์ชันสร้างรายงานตามเดือนและปีที่เลือก
 function generateReport() {
-    try {
-        const monthInput = document.getElementById('reportMonth').value;
-        if (!monthInput) {
-            console.warn('กรุณาเลือกเดือนและปี');
-            return;
-        }
+    const selectedMonth = document.getElementById('monthSelect').value;
+    const selectedYear = parseInt(document.getElementById('yearSelect').value, 10);
 
-        const [selectedYear, selectedMonth] = monthInput.split('-').map(Number);
-        const requests = getRequests();
-
-        // กรองคำขอตามเดือนและปีที่เลือก โดยไม่กรองสถานะ
-        const filteredRequests = requests.filter(request => {
-            const requestDate = new Date(request.dateTime);
-            return (
-                requestDate.getFullYear() === selectedYear &&
-                requestDate.getMonth() + 1 === selectedMonth
-            );
-        });
-
-        displayReport(filteredRequests);
-    } catch (error) {
-        console.error('เกิดข้อผิดพลาดในการสร้างรายงาน:', error);
+    if (!selectedMonth || isNaN(selectedYear)) {
+        Swal.fire('กรุณาเลือกเดือนและปี');
+        return;
     }
+
+    const requests = filterRequestsByDate(getRequests(), selectedMonth, selectedYear);
+
+    if (requests.length === 0) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'ไม่พบข้อมูล',
+            text: 'ไม่พบข้อมูลที่ตรงกับเดือนและปีที่เลือก',
+            confirmButtonText: 'ตกลง'
+        });
+    }
+
+    displayReport(requests);
 }
+
+// ฟังก์ชันกรองคำขอตามเดือนและปีที่เลือก
+function filterRequestsByDate(requests, month, year) {
+    return requests.filter(request => {
+        const requestDate = new Date(request.dateTime);
+        return (
+            requestDate.getFullYear() === year &&
+            (month === 'all' || requestDate.getMonth() + 1 === parseInt(month, 10))
+        );
+    });
+}
+
 
 // ฟังก์ชันแสดงข้อมูลในตารางรายงาน
 function displayReport(requests) {
     const reportTableBody = document.querySelector('#reportTable tbody');
-    reportTableBody.innerHTML = ''; // ล้างข้อมูลเก่าออกก่อน
+    reportTableBody.innerHTML = '';
 
     if (requests.length === 0) {
-        const emptyRow = document.createElement('tr');
-        emptyRow.innerHTML = '<td colspan="6">ไม่พบข้อมูลที่ตรงกับเดือนและปีที่เลือก</td>';
-        reportTableBody.appendChild(emptyRow);
+        createEmptyRow(reportTableBody);
         return;
     }
 
-    // คำนวณคำขอที่จะแสดงในหน้าปัจจุบัน
-    const startIndex = (currentPage - 1) * maxRequestsPerPage;
-    const endIndex = startIndex + maxRequestsPerPage;
-    const paginatedRequests = requests.slice(startIndex, endIndex);
-
-    paginatedRequests.forEach(request => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${formatDate(request.dateTime)}</td>
-            <td>${request.returnDateTime ? formatDate(request.returnDateTime) : '-'}</td>
-            <td>${request.equipment}</td>
-            <td>${request.studentName}</td>
-            <td>${request.studentId}</td>
-            <td>${request.staffName || '-'}</td>
-            <td>${request.status}</td> <!-- เพิ่มสถานะ -->
-
-        `;
-        reportTableBody.appendChild(row);
-    });
+    const paginatedRequests = paginateRequests(requests, currentPage, maxRequestsPerPage);
+    paginatedRequests.forEach(request => createRow(reportTableBody, request));
 
     updatePaginationInfo(requests.length);
 }
+
+// ฟังก์ชันสำหรับสร้างแถวข้อมูลในตาราง
+function createRow(tableBody, request) {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td>${formatDate(request.dateTime)}</td>
+        <td>${request.returnDateTime ? formatDate(request.returnDateTime) : '-'}</td>
+        <td>${request.studentId}</td>
+        <td>${request.studentName}</td>
+        <td>${request.equipment}</td>
+        <td>${request.staffName || '-'}</td>
+        <td>${request.status}</td>
+    `;
+    tableBody.appendChild(row);
+}
+
+// ฟังก์ชันสำหรับสร้างแถวว่างในตาราง
+function createEmptyRow(tableBody) {
+    const emptyRow = document.createElement('tr');
+    emptyRow.innerHTML = `<td colspan="7" style="text-align: center;">ไม่พบข้อมูล</td>`;
+    tableBody.appendChild(emptyRow);
+}
+
+// ฟังก์ชันแบ่งหน้าคำขอ
+function paginateRequests(requests, page, maxPerPage) {
+    const startIndex = (page - 1) * maxPerPage;
+    const endIndex = startIndex + maxPerPage;
+    return requests.slice(startIndex, endIndex);
+}
+
+
 
 // ฟังก์ชันสำหรับฟอร์แมตวันที่ให้อยู่ในรูปแบบที่ต้องการ
 function formatDate(dateString) {
@@ -122,7 +152,6 @@ function updatePaginationInfo(totalRequests) {
     };
     paginationContainer.appendChild(prevButton);
 
-    
     // สร้างปุ่มหมายเลขเพจ
     let startPage = Math.max(1, currentPage - Math.floor(maxVisibleButtons / 2));
     let endPage = startPage + maxVisibleButtons - 1;
@@ -171,5 +200,3 @@ function updatePaginationInfo(totalRequests) {
     paginationContainer.appendChild(lastButton);
 }
 
-// เรียกฟังก์ชันเพื่อสร้างรายงานเมื่อหน้าโหลดเสร็จ
-window.onload = generateReport;

@@ -1,12 +1,18 @@
 // กำหนดจำนวนคำขอสูงสุดต่อหน้า และจำนวนหน้าทั้งหมด
 const maxRequestsPerPage = 8;
 const totalPages = 1000; 
-let currentPage = parseInt(new URLSearchParams(window.location.search).get('page')) || 1; // กำหนดหน้าปัจจุบันจาก URL หรือเป็นหน้าแรก
+let currentPage = parseInt(new URLSearchParams(window.location.search).get('page')) || 1; 
 
 // ฟังก์ชันสำหรับดึงข้อมูลคำขอจาก Local Storage
 function getRequests() {
-    return JSON.parse(localStorage.getItem('requests')) || [];
+    try {
+        return JSON.parse(localStorage.getItem('requests')) || [];
+    } catch (error) {
+        console.error('Error parsing requests from local storage:', error);
+        return [];
+    }
 }
+
 
 // ฟังก์ชันสำหรับบันทึกข้อมูลคำขอลงใน Local Storage
 function setRequests(requests) {
@@ -132,13 +138,13 @@ function loadRequests(page) {
 // ฟังก์ชันสำหรับสร้างปุ่ม
 function createButton(textOrHTML, className, onClick) {
     const button = document.createElement('button');
-    button.innerHTML = textOrHTML; // ใช้ innerHTML เพื่อรองรับการใส่ไอคอน
+    button.innerHTML = textOrHTML; 
     button.className = className;
     button.onclick = onClick;
     return button;
 }
 
-// ฟังก์ชันอัปเดตข้อมูลปุ่ม Pagination
+
 function updatePaginationInfo(page, totalPages) {
     const paginationContainer = document.querySelector('.pagination');
     paginationContainer.innerHTML = '';
@@ -153,18 +159,8 @@ function updatePaginationInfo(page, totalPages) {
     prevButton.disabled = page <= 1;
     paginationContainer.appendChild(prevButton);
 
-    // กำหนดจำนวนปุ่มที่แสดงได้สูงสุด
-    const maxVisibleButtons = 5; // กำหนดจำนวนปุ่มที่ต้องการแสดง
-    let startPage = Math.max(1, page - Math.floor(maxVisibleButtons / 2));
-    let endPage = startPage + maxVisibleButtons - 1;
-
-    // ตรวจสอบและปรับขอบเขตของหน้า
-    if (endPage > totalPages) {
-        endPage = totalPages;
-        startPage = Math.max(1, endPage - maxVisibleButtons + 1);
-    }
-
-    // สร้างปุ่มหมายเลขหน้า
+    // ปุ่มหมายเลขหน้า
+    const [startPage, endPage] = calculatePageRange(page, totalPages, 5);
     for (let i = startPage; i <= endPage; i++) {
         const pageButton = createButton(i, 'btn btn-outline-primary btn-sm mx-1', () => goToPage(i));
         if (i === page) pageButton.classList.add('active');
@@ -182,23 +178,16 @@ function updatePaginationInfo(page, totalPages) {
     paginationContainer.appendChild(lastButton);
 }
 
-// ฟังก์ชันสร้างปุ่ม
-function createButton(text, className, onClick) {
-    const button = document.createElement('button');
-    button.innerHTML = text;
-    button.className = className;
-    button.onclick = onClick;
-    return button;
-}
+
 
 // ฟังก์ชันเปลี่ยนหน้าไปยังหน้าที่ระบุ
 function goToPage(page) {
     if (page >= 1 && page <= totalPages) {
         currentPage = page;
         loadRequests(currentPage);
-        updatePaginationInfo(currentPage, totalPages);
     }
 }
+
 
 
 // ฟังก์ชันคำนวณขอบเขตของหมายเลขหน้าที่แสดงใน Pagination
@@ -213,7 +202,6 @@ function calculatePageRange(page, totalPages, maxButtons) {
     return [startPage, endPage];
 }
 
-// ฟังก์ชันอัปเดตสถานะของคำขอ
 // ฟังก์ชันอัปเดตสถานะของคำขอ
 function updateRequestStatus(id, status) {
     let requests = getRequests();
@@ -252,7 +240,7 @@ function sendApprovalRequest(updatedRequest) {
         didOpen: () => Swal.showLoading(),
     });
 
-    fetch('https://script.google.com/macros/s/AKfycbwzvhkpu2W4MIxA9Xj3f9qkcpZOKLwylozAwlQeWdR4HQVSwTuaDvXU1kesPO4lxL7vVg/exec', {
+    fetch('https://script.google.com/macros/s/AKfycbxu-WLEx8aa2X600LPWEVOEgiB1Hv8JT3dBtMOY_VQlxUeoZT2IEqvyknAm7Mg52ikxPw/exec', {
         method: 'POST',
         body: new URLSearchParams({
             dateTime: updatedRequest.dateTime,
@@ -260,13 +248,15 @@ function sendApprovalRequest(updatedRequest) {
             studentName: updatedRequest.studentName,
             equipment: updatedRequest.equipment,
             staffName: updatedRequest.staffName,
-            returnDateTime: updatedRequest.returnDateTime // เพิ่มข้อมูลวันที่คืน
         }),
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     })
         .then(response => response.text())
         .then(() => showAlert('success', 'สำเร็จ!', 'คำขอถูกอนุมัติแล้ว'))
-        .catch(() => showAlert('error', 'เกิดข้อผิดพลาด', 'การส่งข้อมูลไปยัง Google Sheets ล้มเหลว'))
+        .catch(error => {
+            console.error('Error sending data to Google Sheets:', error);
+            showAlert('error', 'เกิดข้อผิดพลาด', 'การส่งข้อมูลไปยัง Google Sheets ล้มเหลว');
+        })
         .finally(displayEquipmentStatistics);
 }
 
@@ -325,5 +315,4 @@ function deleteAllRequests() {
 // เรียกใช้ฟังก์ชันเมื่อเริ่มต้น
 window.onload = () => {
     loadRequests(currentPage);
-    updatePaginationInfo(currentPage, totalPages);
 };

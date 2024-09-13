@@ -3,90 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: linear-gradient(135deg, #f5f7fa, #ffffff);
-            font-family: Arial, sans-serif;
-            box-sizing: border-box;
-        }
-
-        .login-container {
-            background: rgba(255, 255, 255, 0.8);
-            padding: 60px;
-            border-radius: 12px;
-            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 320px;
-            min-height: 320px; /* กำหนดความสูงขั้นต่ำ */
-            position: relative;
-        }
-        
-        .login-form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .login-form h2 {
-            margin-bottom: 30px;
-            color: #333;
-            font-size: 28px; 
-        }
-
-        
-        
-        .input-field {
-            width: 100%;
-            padding: 15px;
-            margin: 15px 0;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1) inset;
-            font-size: 18px;
-            box-sizing: border-box; 
-        }
-        
-
-        .login-button {
-            width: 50%;
-            padding: 15px;
-            background-color: #a8dadc;
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s;
-        }
-
-        .login-button:hover {
-            background-color: #457b9d;
-        }
-
-
-    </style>
+    <title>Login and Signup Form</title>
+    <link rel="stylesheet" href="top.css/login.css">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="login-container">
-        <form id="loginForm" class="login-form">
-            <h2>Login</h2>
-            <input type="text" placeholder="Username" id="username" class="input-field" required>
-            <input type="password" placeholder="Password" id="password" class="input-field" required>
-            <div id="error-message" class="error-message"></div>
-            <button type="submit" class="login-button">Login</button>
-        </form>
-    </div>
+    <div class="user-display" id="userDisplay"></div>
+        <div class="wrapper">
+            <div class="title-text">
+                <div class="title login">Login</div>
+                <div class="title signup">Signup</div>
+            </div>
+            <div class="form-container">
+                <div class="slide-controls">
+                    <input type="radio" name="slide" id="login" checked>
+                    <input type="radio" name="slide" id="signup">
+                    <label for="login" class="slide login">Login</label>
+                    <label for="signup" class="slide signup">Signup</label>
+                    <div class="slider-tab"></div>
+                </div>
+                <div class="form-inner">
+                    <!-- ฟอร์มเข้าสู่ระบบ -->
+                    <form action="#" class="login">
+                        <div class="field">
+                            <input type="text" placeholder="User" id="loginUsername" required>
+                        </div>
+                        <div class="field">
+                            <input type="password" placeholder="Password" id="loginPassword" required>
+                        </div>
+                        <div class="field btn">
+                            <div class="btn-layer"></div>
+                            <input type="button" value="Login" onclick="loginUser()">
+                        </div>
+                        <div class="signup-link">Not a member? <a href="#">Signup now</a></div>
+                    </form>
 
-    <script src="main.js/login.js"></script>
+                    <!-- ฟอร์มสมัครสมาชิก -->
+                    <form action="#" class="signup">
+                        <div class="field">
+                            <input type="text" placeholder="ชื่อผู้ใช้ที่จะแสดงในเว็บ" id="displayName" required>
+                        </div>
+                        <div class="field">
+                            <input type="text" placeholder="User" id="signupUsername" required>
+                        </div>
+                        <div class="field">
+                            <input type="password" placeholder="Password" id="signupPassword" required>
+                        </div>
+                        <div class="field btn">
+                            <div class="btn-layer"></div>
+                            <input type="button" value="Signup" onclick="signupUser()">
+                        </div>
+                    </form>
+                </div>    
+            </div>
+        </div>
+   
+         
+    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <script src="main.js/login.js">
+       
+    </script>
 </body>
 </html>

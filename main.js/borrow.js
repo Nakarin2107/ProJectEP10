@@ -1,7 +1,41 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const currentUserData = localStorage.getItem('currentUser');
+    if (currentUserData) {
+        const currentUser = JSON.parse(currentUserData);
+        const displayName = currentUser.displayName;
+
+        document.getElementById('userDisplay').textContent = displayName;
+        document.getElementById('userDisplayName').textContent = displayName;
+        document.getElementById('staffName').value = displayName; // ตั้งค่าให้ฟิลด์เจ้าหน้าที่
+    }
+
+    const now = new Date();
+    const formattedDateTime = `${now.toISOString().split('T')[0]}T${now.toTimeString().slice(0, 5)}`; // ใช้ split และ slice แยกและรวมใหม่เป็นรูปแบบที่ถูกต้อง
+    const borrowDateElement = document.getElementById('borrowDate');
+    if (borrowDateElement) {
+        borrowDateElement.value = formattedDateTime;
+    }
+});
+
+
+// ฟังก์ชันออกจากระบบ
+document.getElementById('logoutButton').addEventListener('click', () => {
+    Swal.fire({
+        icon: 'info',
+        title: 'ออกจากระบบสำเร็จ',
+        text: 'คุณจะถูกนำกลับไปที่หน้าเข้าสู่ระบบ',
+        confirmButtonText: 'ตกลง'
+    }).then(() => {
+        localStorage.removeItem('currentUser');
+        window.location.href = 'login.html';
+    });
+});
+
+// ฟังก์ชันสำหรับจัดการการส่งฟอร์มยืมอุปกรณ์
 document.getElementById('borrowForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
-    // Get form values
+    // รับค่าจากฟอร์ม
     const borrowDate = document.getElementById('borrowDate').value;
     const studentId = document.getElementById('studentId').value;
     const studentName = document.getElementById('studentName').value;
@@ -23,12 +57,9 @@ document.getElementById('borrowForm').addEventListener('submit', function(event)
     // ดึงคำขอทั้งหมดจาก Local Storage
     let requests = JSON.parse(localStorage.getItem('requests')) || [];
 
-    // เช็คจำนวนคำขอ
+    // ตรวจสอบจำนวนคำขอ
     const maxRequestsPerPage = 4;
     const totalPages = 100;
-
-    // ค้นหาหน้าปัจจุบัน
-    let currentPage = Math.floor(requests.length / maxRequestsPerPage) + 1;
 
     if (requests.length >= maxRequestsPerPage * totalPages) {
         Swal.fire({
@@ -47,26 +78,26 @@ document.getElementById('borrowForm').addEventListener('submit', function(event)
     localStorage.setItem('requests', JSON.stringify(requests));
 
     // แสดงการแจ้งเตือนหลังจากบันทึกคำขอสำเร็จ
-    // Swal.fire({
-    //     icon: 'success',
-    //     title: 'คำขอถูกบันทึกสำเร็จ!',
-    //     text: 'คำขอของคุณถูกบันทึกแล้ว',
-    //     confirmButtonText: 'ตกลง'
-    //  })
-    // .then(() => {
-    //     // หลังจากกดตกลง ให้ทำการล้างข้อมูลในฟอร์ม
-    //     document.getElementById('borrowForm').reset();
-    // });
+     Swal.fire({
+         icon: 'success',
+         title: 'คำขอถูกบันทึกสำเร็จ!',
+         text: 'คำขอของคุณถูกบันทึกแล้ว',
+         confirmButtonText: 'ตกลง'
+     }).then(() => {
+         // ล้างข้อมูลในฟอร์ม
+         document.getElementById('borrowForm').reset();
+     });
 });
 
 
 
 
-                                        //เอาไวใส่ข้างใต้  localStorage.setItem
+
+
  
 
 
-// แสดงการโหลดขณะส่งคำขอ                                           #  รอความสำเร็จ  #
+// แสดงการโหลดขณะส่งคำขอ                                          
 // Swal.fire({
 //     title: 'กำลังส่งคำขอ...',
 //     text: 'กรุณารอสักครู่',
@@ -78,7 +109,7 @@ document.getElementById('borrowForm').addEventListener('submit', function(event)
 
 
 // Send data to Google Sheets via Apps Script Web App ส่งข้อมูลไปยัง Google Sheets 
-// fetch('https://script.google.com/macros/s/AKfycbxvtdP0WK9IHDy06cMDoHrBWW1-yliO8pVXVK66TKhTWubSQwBPkOjKuHUONTpQQIjb/exec', {
+// fetch('', {
 //     method: 'POST',
 //     body: new URLSearchParams({ 
 //         dateTime: borrowDate,
