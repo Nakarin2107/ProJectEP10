@@ -107,42 +107,38 @@
         }
 
         
-        .pagination {
+        .pagination-container {
             display: flex;
+            justify-content: center; /* จัดให้อยู่ตรงกลาง */
+            margin-top: 20px;
+        }
+        
+        .pagination {
+            display: flex; /* ใช้ flexbox เพื่อจัดปุ่มให้อยู่ในแนวเดียวกัน */
             justify-content: center;
-            align-items: center;
-            margin: 20px 0;
+            align-items: center ;
+            gap: 8px; /* เพิ่มช่องว่างระหว่างปุ่ม */
         }
         
-        .pagination .icon-button {
-            margin: 0 8px;
-            font-size: 20px; 
-            color: #999999; 
-            transition: color 0.3s ease, transform 0.2s ease;
+        .pagination button {
+            padding: 8px 12px;
+            background-color: white;
+            border: 1px solid #007bff;
+            color: #007bff;
+            border-radius: 4px;
             cursor: pointer;
-            transform: scale(1); 
+            transition: background-color 0.3s, color 0.3s;
         }
         
-        .pagination .icon-button:hover {
-            color: #007bff; 
-            transform: scale(1.2); 
+        .pagination button:hover {
+            background-color: #007bff;
+            color: white;
         }
         
-        .pagination .icon-button:active {
-            color: #333333; 
-            transform: scale(1); 
-        }
-        
-        .pagination .icon-button.disabled {
-            color: #cccccc; 
-            cursor: not-allowed;
-        }
-        
-        .pagination .page-info {
-            margin: 0 10px;
-            font-size: 16px;
-            color: #333333; 
-            font-family: 'Courier New', Courier, monospace;
+        .pagination button.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #0056b3;
         }
         
         

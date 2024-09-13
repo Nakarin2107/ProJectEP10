@@ -6,8 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setDefaultMonthAndYear(); // เรียกฟังก์ชันตั้งค่าเริ่มต้น
 });
 
-document.getElementById('searchButton').addEventListener('click', generateStaffSummary);
-
 function setDefaultMonthAndYear() {
     const currentDate = new Date();
     const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, '0');
@@ -16,9 +14,6 @@ function setDefaultMonthAndYear() {
     document.getElementById('monthSelect').value = currentMonth;
     document.getElementById('yearSelect').value = currentYear;
 }
-
-// ฟังก์ชันอื่น ๆ เช่น populateStaffSelect, generateStaffSummary ฯลฯ
-
 
 
 

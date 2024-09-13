@@ -24,7 +24,6 @@ document.addEventListener("DOMContentLoaded", function() {
     yearInput.value = currentDate.getFullYear();
 });
 
-// ฟังก์ชันสร้างรายงานตามเดือนและปีที่เลือก
 function generateReport() {
     const selectedMonth = document.getElementById('monthSelect').value;
     const selectedYear = parseInt(document.getElementById('yearSelect').value, 10);
@@ -46,7 +45,11 @@ function generateReport() {
     }
 
     displayReport(requests);
+
+    // Show the table after generating the report
+    document.getElementById('reportTable').style.display = 'table';
 }
+
 
 // ฟังก์ชันกรองคำขอตามเดือนและปีที่เลือก
 function filterRequestsByDate(requests, month, year) {
@@ -58,7 +61,6 @@ function filterRequestsByDate(requests, month, year) {
         );
     });
 }
-
 
 // ฟังก์ชันแสดงข้อมูลในตารางรายงาน
 function displayReport(requests) {
@@ -105,8 +107,6 @@ function paginateRequests(requests, page, maxPerPage) {
     return requests.slice(startIndex, endIndex);
 }
 
-
-
 // ฟังก์ชันสำหรับฟอร์แมตวันที่ให้อยู่ในรูปแบบที่ต้องการ
 function formatDate(dateString) {
     try {
@@ -121,6 +121,13 @@ function formatDate(dateString) {
     }
 }
 
+// ฟังก์ชันการนำทางไปยังหน้าเพจที่ถูกต้อง
+function navigateToPage(pageNumber) {
+    currentPage = pageNumber;
+    generateReport();
+}
+
+// ฟังก์ชันอัพเดทข้อมูล Pagination
 function updatePaginationInfo(totalRequests) {
     const paginationContainer = document.querySelector('.pagination');
     paginationContainer.innerHTML = ''; // ล้าง Pagination เก่า
@@ -133,10 +140,7 @@ function updatePaginationInfo(totalRequests) {
     firstButton.textContent = 'หน้าแรก';
     firstButton.className = 'btn btn-primary btn-sm mx-1';
     firstButton.disabled = currentPage === 1;
-    firstButton.onclick = () => {
-        currentPage = 1;
-        generateReport();
-    };
+    firstButton.onclick = () => navigateToPage(1);
     paginationContainer.appendChild(firstButton);
 
     // สร้างปุ่ม Previous พร้อมไอคอน
@@ -146,8 +150,7 @@ function updatePaginationInfo(totalRequests) {
     prevButton.disabled = currentPage === 1;
     prevButton.onclick = () => {
         if (currentPage > 1) {
-            currentPage--;
-            generateReport();
+            navigateToPage(currentPage - 1);
         }
     };
     paginationContainer.appendChild(prevButton);
@@ -168,10 +171,7 @@ function updatePaginationInfo(totalRequests) {
         if (i === currentPage) {
             pageButton.classList.add('active');
         }
-        pageButton.onclick = () => {
-            currentPage = i;
-            generateReport();
-        };
+        pageButton.onclick = () => navigateToPage(i);
         paginationContainer.appendChild(pageButton);
     }
 
@@ -182,8 +182,7 @@ function updatePaginationInfo(totalRequests) {
     nextButton.disabled = currentPage === totalPageCount;
     nextButton.onclick = () => {
         if (currentPage < totalPageCount) {
-            currentPage++;
-            generateReport();
+            navigateToPage(currentPage + 1);
         }
     };
     paginationContainer.appendChild(nextButton);
@@ -193,10 +192,6 @@ function updatePaginationInfo(totalRequests) {
     lastButton.textContent = 'หน้าสุดท้าย';
     lastButton.className = 'btn btn-primary btn-sm mx-1';
     lastButton.disabled = currentPage === totalPageCount;
-    lastButton.onclick = () => {
-        currentPage = totalPageCount;
-        generateReport();
-    };
+    lastButton.onclick = () => navigateToPage(totalPageCount);
     paginationContainer.appendChild(lastButton);
 }
-

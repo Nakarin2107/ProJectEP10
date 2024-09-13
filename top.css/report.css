@@ -195,3 +195,7 @@ tr:nth-child(even) {
     width: 100%;
     white-space: nowrap; /* ป้องกันการตัดบรรทัดของเนื้อหาภายในตาราง */
 }
+
+#reportTable {
+    display: none; /* Hide the table initially */
+}
