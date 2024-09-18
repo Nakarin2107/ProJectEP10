@@ -16,9 +16,7 @@
     <div class="containerx">
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
-                    aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
@@ -31,23 +29,19 @@
                         <a class="nav-link" href="student-report.html">รายงานยืม-คืน</a>
                     </div>
                 </div>
-            </div>
-
-            <!-- ปุ่ม Dropdown สำหรับผู้ใช้ -->
-            <div class="user-info dropdown">
-                <button class="btn btn-user dropdown-toggle" type="button" id="userMenuButton"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOHqiIabKJAjUyJiV051Jcob4Gr8j5Agm_7A&s"
-                        alt="User Avatar" style="width: 30px; height: 30px; border-radius: 50%;">
-                    <span id="userDisplay">User</span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuButton">
-                    <li><span class="dropdown-item-text"><span id="userDisplayName">User Name</span></span></li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li><button class="dropdown-item" id="logoutButton">ออกจากระบบ</button></li>
-                </ul>
+    
+                <!-- ปุ่ม Dropdown สำหรับผู้ใช้ -->
+                <div class="user-info dropdown">
+                    <button class="btn btn-user dropdown-toggle" type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOHqiIabKJAjUyJiV051Jcob4Gr8j5Agm_7A&s" alt="User Avatar" style="width: 25px; height: 25px; border-radius: 50%;">
+                        <span id="userDisplay">User</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuButton">
+                        <li><span class="dropdown-item-text"><span id="userDisplayName">User Name</span></span></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><button class="dropdown-item" id="logoutButton">ออกจากระบบ</button></li>
+                    </ul>
+                </div>
             </div>
         </nav>
     </div>

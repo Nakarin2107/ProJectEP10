@@ -2,19 +2,39 @@ document.addEventListener('DOMContentLoaded', () => {
     // ดึงข้อมูลผู้ใช้ที่ล็อกอินอยู่จาก Local Storage
     const currentUser = localStorage.getItem('currentUser');
 
-    if (currentUser) {
-        const user = JSON.parse(currentUser); // แปลงข้อมูล JSON ที่เก็บไว้ใน Local Storage ให้เป็น Object
+    if (!currentUser) {
+        // หากไม่มีข้อมูลผู้ใช้ให้กลับไปที่หน้า Login
+        redirectToLogin();
+        return;
+    }
 
-        // ตรวจสอบว่า Element ที่จะใช้แสดงชื่อผู้ใช้มีอยู่หรือไม่
+    try {
+        // แปลงข้อมูล JSON ที่เก็บไว้ใน Local Storage ให้เป็น Object
+        const user = JSON.parse(currentUser);
+        
+        // ตรวจสอบว่ามีข้อมูล displayName หรือไม่
+        if (!user.displayName) {
+            throw new Error('User data is incomplete: missing displayName');
+        }
+
+        // ตรวจสอบ Element ที่จะใช้แสดงชื่อผู้ใช้
         const userDisplay = document.getElementById('userDisplay');
         const userDisplayName = document.getElementById('userDisplayName');
 
-        if (userDisplay) userDisplay.textContent = user.displayName; // แสดงชื่อผู้ใช้บนปุ่มเมนูดรอปดาวน์
-        if (userDisplayName) userDisplayName.textContent = user.displayName; // แสดงชื่อผู้ใช้ในเมนูดรอปดาวน์
-    } else {
-        window.location.href = 'login.html'; // หากไม่มีข้อมูลผู้ใช้ให้กลับไปที่หน้า Login
+        // อัปเดตชื่อผู้ใช้ในส่วนต่าง ๆ
+        if (userDisplay) userDisplay.textContent = user.displayName;
+        if (userDisplayName) userDisplayName.textContent = user.displayName;
+
+    } catch (error) {
+        console.error('Error loading user data:', error.message);
+        redirectToLogin();
     }
 });
+
+// ฟังก์ชันสำหรับเปลี่ยนหน้าไปยังหน้า login
+function redirectToLogin() {
+    window.location.href = 'login.html';
+}
 
 
         // ฟังก์ชันสำหรับออกจากระบบ

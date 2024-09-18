@@ -1,6 +1,6 @@
 // กำหนดจำนวนคำขอสูงสุดต่อหน้า และจำนวนหน้าทั้งหมด
 const maxRequestsPerPage = 8;
-const totalPages = 1000; 
+const totalPages = Math.ceil(getRequests().length / maxRequestsPerPage);
 let currentPage = parseInt(new URLSearchParams(window.location.search).get('page')) || 1; 
 
 // ฟังก์ชันสำหรับดึงข้อมูลคำขอจาก Local Storage
@@ -240,7 +240,7 @@ function sendApprovalRequest(updatedRequest) {
         didOpen: () => Swal.showLoading(),
     });
 
-    fetch('https://script.google.com/macros/s/AKfycbxu-WLEx8aa2X600LPWEVOEgiB1Hv8JT3dBtMOY_VQlxUeoZT2IEqvyknAm7Mg52ikxPw/exec', {
+    fetch('https://script.google.com/macros/s/AKfycbwJT2ue0VEHPILc9AciHgiZ_2L0KYjEyhycQfTdr444MzZdgQDOYyokSAL8iB0Zg__l/exec', {
         method: 'POST',
         body: new URLSearchParams({
             dateTime: updatedRequest.dateTime,

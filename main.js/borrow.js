@@ -17,20 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-
-// ฟังก์ชันออกจากระบบ
-document.getElementById('logoutButton').addEventListener('click', () => {
-    Swal.fire({
-        icon: 'info',
-        title: 'ออกจากระบบสำเร็จ',
-        text: 'คุณจะถูกนำกลับไปที่หน้าเข้าสู่ระบบ',
-        confirmButtonText: 'ตกลง'
-    }).then(() => {
-        localStorage.removeItem('currentUser');
-        window.location.href = 'login.html';
-    });
-});
-
 // ฟังก์ชันสำหรับจัดการการส่งฟอร์มยืมอุปกรณ์
 document.getElementById('borrowForm').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -85,7 +71,9 @@ document.getElementById('borrowForm').addEventListener('submit', function(event)
          confirmButtonText: 'ตกลง'
      }).then(() => {
          // ล้างข้อมูลในฟอร์ม
-         document.getElementById('borrowForm').reset();
+         document.getElementById('studentId').value = '';
+         document.getElementById('studentName').value = '';
+         document.getElementById('equipment').value = '';
      });
 });
 
